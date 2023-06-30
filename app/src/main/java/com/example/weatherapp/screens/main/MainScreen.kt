@@ -26,6 +26,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.example.weatherapp.data.DataOrException
 import com.example.weatherapp.model.Weather
+import com.example.weatherapp.navigation.WeatherScreens
 import com.example.weatherapp.utils.formatDate
 import com.example.weatherapp.utils.formatDecimals
 import com.example.weatherapp.widgets.HumidityWindPressureRow
@@ -70,8 +71,12 @@ fun MainScaffold(
         topBar = {
             TopAppBarWidget(
                 title = "${weather.city.name}, ${weather.city.country}",
-                navController = navController,
-                elevation = 5.dp
+                elevation = 5.dp,
+                onAddActionClicked = {
+                    navController.navigate(
+                        WeatherScreens.SearchScreen.name,
+                    )
+                }
             )
         },
     ) { innerPadding ->
