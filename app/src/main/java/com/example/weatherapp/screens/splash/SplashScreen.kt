@@ -31,8 +31,6 @@ import kotlinx.coroutines.delay
 
 @Composable
 fun SplashScreen(navController: NavController) {
-
-
     val scale = remember {
         Animatable(0f)
     }
@@ -43,12 +41,13 @@ fun SplashScreen(navController: NavController) {
             targetValue = 0.5f,
             animationSpec = tween(
                 durationMillis = 800,
-                easing = {
+                easing =
+                {
                     OvershootInterpolator(8f).getInterpolation(it)
                 },
             ),
         )
-        delay(1000L)
+        delay(100)
 
         navController.navigate(WeatherScreens.MainScreen.name)
     }
@@ -67,10 +66,8 @@ fun SplashScreen(navController: NavController) {
             modifier = Modifier.padding(1.dp),
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.Center,
-
             ) {
             Image(
-
                 painter = painterResource(id = R.drawable.sun),
                 contentDescription = "Sun icon",
                 contentScale = ContentScale.Fit,
