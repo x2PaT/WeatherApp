@@ -1,7 +1,6 @@
 package com.example.weatherapp.screens.main
 
 import android.annotation.SuppressLint
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -9,6 +8,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.Divider
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
@@ -24,13 +24,15 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
-import coil.compose.rememberAsyncImagePainter
-import coil.compose.rememberImagePainter
 import com.example.weatherapp.data.DataOrException
 import com.example.weatherapp.model.Weather
 import com.example.weatherapp.utils.formatDate
+import com.example.weatherapp.utils.formatDecimals
+import com.example.weatherapp.widgets.HumidityWindPressureRow
+import com.example.weatherapp.widgets.SunriseSunsetRow
+import com.example.weatherapp.widgets.ThisWeekRow
 import com.example.weatherapp.widgets.TopAppBarWidget
-import java.lang.Exception
+import com.example.weatherapp.widgets.WeatherStateImage
 
 @Composable
 fun MainScreen(
@@ -40,7 +42,7 @@ fun MainScreen(
     val weatherData = produceState<DataOrException<Weather, Boolean, Exception>>(
         initialValue = DataOrException(loading = false)
     ) {
-        value = mainScreenViewModel.getWeatherData("Seattle")
+        value = mainScreenViewModel.getWeatherData("lisbon")
     }.value
 
     if (weatherData.loading == true) {
@@ -101,27 +103,19 @@ fun MainScaffold(
                 ) {
                     WeatherStateImage(imageCode = weather.list[0].weather[0].icon)
                     Text(
-                        text = "56",
+                        text = formatDecimals(weather.list[0].temp.day) + "°",
                         style = MaterialTheme.typography.headlineMedium,
                         fontWeight = FontWeight.ExtraBold,
                     )
                     Text(
-                        text = "Sunny", fontStyle = FontStyle.Italic,
+                        text = weather.list[0].weather[0].main, fontStyle = FontStyle.Italic,
                     )
-                    Text(text = "")
                 }
             }
+            HumidityWindPressureRow(weather)
+            Divider()
+            SunriseSunsetRow(weather)
+            ThisWeekRow(weather)
         }
     }
-}
-
-@Composable
-fun WeatherStateImage(imageCode: String) {
-    val image_url = "https://openweathermap.org/img/wn/${imageCode}.png"
-
-    Image(
-        painter = rememberAsyncImagePainter(model = image_url),
-        contentDescription = "weather image",
-        modifier = Modifier.size(80.dp)
-    )
 }
