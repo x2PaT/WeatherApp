@@ -1,6 +1,7 @@
 package com.example.weatherapp.screens.main
 
 import android.annotation.SuppressLint
+import android.util.Log
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -39,11 +40,13 @@ import com.example.weatherapp.widgets.WeatherStateImage
 fun MainScreen(
     navController: NavController,
     mainScreenViewModel: MainScreenViewModel = hiltViewModel(),
+    city: String?,
 ) {
+    Log.d("city debug", "MainScreen: $city")
     val weatherData = produceState<DataOrException<Weather, Boolean, Exception>>(
         initialValue = DataOrException(loading = false)
     ) {
-        value = mainScreenViewModel.getWeatherData("lisbon")
+        value = mainScreenViewModel.getWeatherData(city!!)
     }.value
 
     if (weatherData.loading == true) {
@@ -69,21 +72,20 @@ fun MainScaffold(
     Scaffold(
         modifier = Modifier,
         topBar = {
-            TopAppBarWidget(
+            TopAppBarWidget(navController = navController,
                 title = "${weather.city.name}, ${weather.city.country}",
+                city = weather.city.name,
+                country = weather.city.country,
                 elevation = 5.dp,
-                onAddActionClicked = {
+                onSearchActionActionClicked = {
                     navController.navigate(
                         WeatherScreens.SearchScreen.name,
                     )
-                }
-            )
+                })
         },
     ) { innerPadding ->
         Column(
-            modifier = Modifier
-                .padding(innerPadding)
-                .fillMaxWidth(),
+            modifier = Modifier.padding(innerPadding).fillMaxWidth(),
             verticalArrangement = Arrangement.Center,
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
@@ -96,9 +98,7 @@ fun MainScaffold(
             )
 
             Surface(
-                modifier = Modifier
-                    .padding(4.dp)
-                    .size(200.dp),
+                modifier = Modifier.padding(4.dp).size(200.dp),
                 shape = CircleShape,
                 color = Color(0xFFFFC400)
             ) {

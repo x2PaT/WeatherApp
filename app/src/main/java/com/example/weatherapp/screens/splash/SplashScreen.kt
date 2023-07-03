@@ -2,7 +2,6 @@ package com.example.weatherapp.screens.splash
 
 import android.view.animation.OvershootInterpolator
 import androidx.compose.animation.core.Animatable
-import androidx.compose.animation.core.Ease
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
@@ -49,7 +48,7 @@ fun SplashScreen(navController: NavController) {
         )
         delay(100)
 
-        navController.navigate(WeatherScreens.MainScreen.name)
+        navController.navigate(WeatherScreens.MainScreen.name + "/Warsaw")
     }
 
     Surface(

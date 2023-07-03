@@ -29,6 +29,7 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
+import com.example.weatherapp.navigation.WeatherScreens
 import com.example.weatherapp.widgets.TopAppBarWidget
 
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
@@ -38,7 +39,9 @@ fun SearchScreen(navController: NavController) {
     Scaffold(topBar = {
         TopAppBarWidget(
             title = "Search screen",
-            onButtonClicked = {
+            isMainScreen = false,
+            navController = navController,
+            onLeadingButtonClicked = {
                 navController.popBackStack()
             },
         )
@@ -48,7 +51,11 @@ fun SearchScreen(navController: NavController) {
                 verticalArrangement = Arrangement.Center,
                 horizontalAlignment = Alignment.CenterHorizontally,
             ) {
-                SearchBar()
+                SearchBar() { mCity ->
+                    navController.navigate(
+                        WeatherScreens.MainScreen.name + "/$mCity"
+                    )
+                }
             }
         }
     }
@@ -70,6 +77,12 @@ fun SearchBar(onSearch: (String) -> Unit = {}) {
         CommonTextField(
             valueState = searchQueryState,
             placeholder = "Warsaw",
+            onAction = KeyboardActions {
+                if (!valid) return@KeyboardActions
+                onSearch(searchQueryState.value.trim())
+                searchQueryState.value = ""
+                keyboardController?.hide()
+            }
         )
     }
 }
